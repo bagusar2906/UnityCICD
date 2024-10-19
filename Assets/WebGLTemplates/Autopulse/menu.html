@@ -1,0 +1,136 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="TemplateData/bootstrap.min.css">
+  <style>
+    #wrapper {
+      padding: 15px;
+      width: 200px;
+    }
+
+    .btn-grid {
+      margin: -2px 0;
+    }
+
+    .btn-grid>.btn {
+      margin: 2px 0;
+    }
+  </style>
+  <!-- <script src="TemplateData/bootstrap.bundle.min.js"></script> -->
+  <script src="TemplateData/jquery-3.3.1.min.js"></script>
+  <script>
+    $(document).ready(function () {
+
+      const populateList = (function () {
+        $('#protocol')
+          .empty()
+        $.getJSON("api/simulator/get-protocols",
+          function (data) {
+            for (const val of data) {
+              $('#protocol').append($(document.createElement('option')).prop({
+                value: val,
+                text: val.charAt(0).toUpperCase() + val.slice(1)
+              }))
+            }
+          });
+      })
+
+
+      $('#refresh').click(function () {
+        populateList();
+      });
+
+      $('#btnset').click(function () {
+        const protocol = $('#protocol').val()
+        const url = "api/simulator/set-layout"
+        $.ajax(url, {
+          type: "POST",
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify({ "name": protocol }),
+          success: function (result) {
+            // when call is sucessfull
+          },
+          error: function (err) {
+            // check the err for error details
+          }
+        }); // ajax call closing
+
+      });
+
+      $('#btn-error-gripping').click(function () {        
+        const url = "api/simulator/trigger-error/gripper"
+        $.ajax(url, {
+          type: "POST",
+          contentType: "application/json; charset=utf-8",          
+          success: function (result) {
+            // when call is sucessfull
+          },
+          error: function (err) {
+            // check the err for error details
+          }
+        }); // ajax call closing
+
+      });
+
+
+      populateList();
+
+    });
+
+  </script>
+</head>
+<header>
+  <title>Menu</title>
+</header>
+
+<body>
+  <div id="menu" class="container">
+
+    <div class="-grid gap-2 d-md-flex" role="group">
+      <span>Camera</span>
+      <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+      <label class="btn btn-sm btn-outline-primary" for="btnradio1">Front</label>
+
+      <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off">
+      <label class="btn btn-sm btn-outline-primary" for="btnradio2">Left</label>
+
+      <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+      <label class="btn btn-sm btn-outline-primary" for="btnradio3">Right</label>
+
+      <input type="radio" class="btn-check" name="btnradio" id="btnradio4" autocomplete="off">
+      <label class="btn btn-sm btn-outline-primary" for="btnradio4">Top</label>
+    </div>
+
+    <div class="-grid gap-2 d-md-flex" role="group">
+      <span>Simulation Speed</span>
+      <input type="radio" class="btn-check" name="btn-radio" id="btn-radio1" autocomplete="off">
+      <label class="btn btn-sm btn-outline-primary" for="btn-radio1">Slow</label>
+
+      <input type="radio" class="btn-check" name="btn-radio" id="btn-radio2" autocomplete="off" checked>
+      <label class="btn btn-sm btn-outline-primary" for="btn-radio2">Normal</label>
+
+      <input type="radio" class="btn-check" name="btn-radio" id="btn-radio3" autocomplete="off">
+      <label class="btn btn-sm btn-outline-primary" for="btn-radio3">Fast</label>
+    </div>
+
+    <div class="btn-grid">
+      <div class="g-col-4" role="group">
+        <span>Configuration</span>
+        <button id="refresh" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-refresh"></i></button>
+        <select id="protocol" class="form-select form-select-lg mb-3" aria-label=".form-select-sm example">
+          <!-- <option selected="selected" value="">Open this select menu</option> -->
+        </select>
+        <button id="btnset" class="btn btn-sm btn-primary">Set</button>
+
+      </div>
+      <span>Trigger Gantry Error</span>
+      <button id="btncollision" class="btn btn-sm btn-primary">Collision</button>
+      <button id="btn-error-gripping" class="btn btn-sm btn-primary">Failed Gripping</button>
+
+    </div>
+
+
+</body>
+
+</html>

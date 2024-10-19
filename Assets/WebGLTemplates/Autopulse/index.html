@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Auto pulse Simulator</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+  <script src="TemplateData/jsframe.js"></script>
+  <script src="TemplateData/signalr.js"></script>
+</head>
+
+<body class="dark">
+  <div id="unity-container" class="unity-desktop">
+    <canvas id="unity-canvas"></canvas>
+  </div>
+  <div id="loading-cover" style="display:none;">
+    <div id="unity-loading-bar">
+      <div id="unity-logo"><img src="logo.png"></div>
+      <div id="unity-progress-bar-empty" style="display: none;">
+        <div id="unity-progress-bar-full"></div>
+      </div>
+      <div class="spinner"></div>
+    </div>
+  </div>
+  <div id="unity-fullscreen-button" style="display: none;"></div>
+  <script>
+    const hideFullScreenButton = "true";
+    const buildUrl = "Build";
+    const loaderUrl = buildUrl + "/WebGL.loader.js";
+    const config = {
+      dataUrl: buildUrl + "/WebGL.data.unityweb",
+      frameworkUrl: buildUrl + "/WebGL.framework.js.unityweb",
+      codeUrl: buildUrl + "/WebGL.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+      companyName: "Bagus",
+      productName: "Auto pulse Simulator",
+      productVersion: "0.0.5",
+    };
+
+    const container = document.querySelector("#unity-container");
+    const canvas = document.querySelector("#unity-canvas");
+    const loadingCover = document.querySelector("#loading-cover");
+    const progressBarEmpty = document.querySelector("#unity-progress-bar-empty");
+    const progressBarFull = document.querySelector("#unity-progress-bar-full");
+    const fullscreenButton = document.querySelector("#unity-fullscreen-button");
+    const spinner = document.querySelector('.spinner');
+    const jsFrame = new JSFrame();
+    const frame = jsFrame.create({
+      title: 'Menu',
+      left: 20, top: 20, width: 418, height: 160,
+      resizable: false,
+      url: 'menu.html',//URL to display in iframe
+      //urlLoaded:Callback function called after loading iframe
+      urlLoaded: (frame) => {
+        //Called when the url finishes loading
+      }
+    });
+
+
+    const canFullscreen = (function () {
+      for (const key of [
+        'exitFullscreen',
+        'webkitExitFullscreen',
+        'webkitCancelFullScreen',
+        'mozCancelFullScreen',
+        'msExitFullscreen',
+      ]) {
+        if (key in document) {
+          return true;
+        }
+      }
+      return false;
+    }());
+
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      container.className = "unity-mobile";
+      config.devicePixelRatio = 1;
+    }
+    loadingCover.style.display = "";
+
+    const script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      const instance = createUnityInstance(canvas, config, (progress) => {
+        spinner.style.display = "none";
+        progressBarEmpty.style.display = "";
+        progressBarFull.style.width = `${100 * progress}%`;
+      }).then((unityInstance) => {
+        loadingCover.style.display = "none";
+        fullscreenButton.style.display = "none";
+        frame.on('#btnradio1', 'click', (_frame, evt) => {
+          unityInstance.SendMessage("Main Camera", "SelectCamera", 0); //Front
+        });
+        frame.on('#btnradio2', 'click', (_frame, evt) => {
+          unityInstance.SendMessage("Main Camera", "SelectCamera", 3); //Left
+        });
+        frame.on('#btnradio3', 'click', (_frame, evt) => {
+          unityInstance.SendMessage("Main Camera", "SelectCamera", 1);
+        });
+        frame.on('#btnradio4', 'click', (_frame, evt) => {
+          unityInstance.SendMessage("Main Camera", "SelectCamera", 4);
+        });
+
+        //Sim factor selection
+        frame.on('#btn-radio1', 'click', (_frame, evt) => {
+          unityInstance.SendMessage("AutoPulse", "SetSimSpeed", 0.5);
+        });
+        frame.on('#btn-radio2', 'click', (_frame, evt) => {
+          unityInstance.SendMessage("AutoPulse", "SetSimSpeed", 1.0);
+        });
+        frame.on('#btn-radio3', 'click', (_frame, evt) => {
+          unityInstance.SendMessage("AutoPulse", "SetSimSpeed", 1.5);
+        });
+        frame.on('#btn-radio4', 'click', (_frame, evt) => {
+          unityInstance.SendMessage("AutoPulse", "SetSimSpeed", 2.0);
+        });
+        frame.on('#btn-radio4', 'click', (_frame, evt) => {
+          unityInstance.SendMessage("AutoPulse", "SetSimSpeed", 3.0);
+        });
+
+        //Trigger Collision
+        frame.on('#btncollision', 'click', (_frame, evt) => {
+          unityInstance.SendMessage("Collision Sensor", "TriggerCollision");
+        });
+
+
+        frame.hideFrameComponent('closeButton');
+        frame.show();
+        if (canFullscreen) {
+          if (!hideFullScreenButton) {
+            fullscreenButton.style.display = "";
+          }
+          fullscreenButton.onclick = () => {
+            unityInstance.SetFullscreen(1);
+          };
+        }
+      }).catch((message) => {
+        alert(message);
+      });
+    };
+    document.body.appendChild(script);
+  </script>
+</body>
+
+</html>
