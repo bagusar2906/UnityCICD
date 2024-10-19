@@ -34,11 +34,6 @@ jobs:
           - 2019.3-universal-render-pipeline
           - 2019.3-high-definition-render-pipeline
         targetPlatform:
-          - StandaloneLinux64
-          - StandaloneWindows
-          - StandaloneOSX
-          - iOS
-          - Android
           - WebGL
         unityVersion: ${{ fromJson(needs.matrixBuilder.outputs.versions) }}
         # 2018.3+
