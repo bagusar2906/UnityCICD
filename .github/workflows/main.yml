@@ -105,7 +105,7 @@ jobs:
 
       - name: Upload build artifacts
 #        if: ${{ matrix.unityVersion == '2021.1.6f1' || matrix.unityVersion == '2020.1.6f1' || matrix.unityVersion == '2019.4.6f1' || matrix.unityVersion == '2019.3.6f1' || matrix.unityVersion == '2019.2.6f1' || matrix.unityVersion == '2019.1.6f1' || matrix.unityVersion == '2018.4.6f1' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Build (${{ matrix.projectPath }}-${{ matrix.targetPlatform }}-${{ matrix.unityVersion }})
           path: build/${{ matrix.targetPlatform }}
