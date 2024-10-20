@@ -5,16 +5,34 @@ name: Build Unity Project🧪
 #####################################################################################
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch: 
+    inputs:
+      targetPlatform:
+        description: 'Target Platform'
+        required: true
+        default: 'WebGL'
+        type: choice
+        options:
+          - WebGL
+          - StandaloneWindows64
+          - StandaloneLinux64
+      runsOnServer:
+        description: 'Runner Server'
+        required: true
+        default: 'self-hosted'
+        type: choice
+        options:
+          - self-hosted
+          - ubuntu-latest
 jobs:
   buildForAllSupportedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
-    runs-on: self-hosted
+    runs-on: ${{ inputs.runsOnServer }} 
     strategy:
             fail-fast: false
             matrix:
-                targetPlatform: 
-                  - WebGL
+                targetPlatform: ${{ inputs.targetPlatform }} 
+                
     steps:
       # Checkout
       - name: Checkout repository
