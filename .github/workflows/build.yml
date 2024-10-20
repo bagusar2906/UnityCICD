@@ -31,7 +31,8 @@ jobs:
     strategy:
             fail-fast: false
             matrix:
-                targetPlatform: ${{ inputs.targetPlatform }} 
+                targetPlatform: 
+                 - ${{ inputs.targetPlatform }} 
                 
     steps:
       # Checkout
