@@ -44,7 +44,7 @@ jobs:
             export is_unity_license_set="${{ env.UNITY_LICENSE != '' }}"
             echo "is_unity_license_set=$is_unity_license_set" >> $GITHUB_OUTPUT
 
-   activation:
+  activation:
     needs: checklicense
     if: needs.checklicense.outputs.is_unity_license_set == 'false'
     name: Request manual activation file 🔑
@@ -85,7 +85,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: Test results (all modes)
-        path: ${{ steps.testRunner.outputs.artifactsPath }}
+          path: ${{ steps.testRunner.outputs.artifactsPath }}
 
   buildForAllSupportedPlatforms:
     needs: test
