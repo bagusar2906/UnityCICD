@@ -24,6 +24,7 @@ on:
         options:
           - self-hosted
           - ubuntu-latest
+          - windows-2019
 jobs:
   buildForAllSupportedPlatforms:
     name: Build for ${{ matrix.targetPlatform }}
