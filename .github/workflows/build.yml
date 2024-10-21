@@ -62,7 +62,7 @@ jobs:
           path: ${{ steps.getManualLicenseFile.outputs.filePath }}
 
   test:
-    needs: activation
+    needs: checklicense
     if: needs.checklicense.outputs.is_unity_license_set == 'true'
     name: Run all tests ✨
     runs-on: ${{ inputs.runsOnServer }} 
